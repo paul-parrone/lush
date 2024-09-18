@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: lush-dev-test-app
+
+logging:
+  level:
+    root: INFO
+    com.px3j.lush: ERROR
+    lush.core.debug: DEBUG
+  pattern:
+    level: "[%32mdc{lush-user-name:-core}]"
+    correlation: "[%X{spanId},%X{traceId}]"
+
+## Spring Boot Actuator Related
+management:
+  endpoints:
+    web:
+      exposure:
+        include: configprops,env,health,httptrace,info,loggers,shutdown
+
+  tracing:
+    sampling:
+      probability: 1.0

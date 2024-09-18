@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>Lush Service Architecture - Core Web</name>
+    <description>Lush Service Architecture - Core Web</description>
+    <url>https://github.com/paul-parrone/lush-core-web</url>
+
+    <parent>
+        <groupId>com.px3j</groupId>
+        <artifactId>lush</artifactId>
+        <version>2024.Q4.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>lush-core-web</artifactId>
+    <version>2024.Q4.1-SNAPSHOT</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.px3j</groupId>
+            <artifactId>lush-core</artifactId>
+            <version>2024.Q4.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <!-- Servlet API -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>

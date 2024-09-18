@@ -1,0 +1,37 @@
+spring:
+  application:
+    # typical spring application name, should be overridden by Lush services
+    name: lush-core
+
+  # Lush integration with Spring Cloud Sleuth - this allows Lush to carry the requesting username
+  # across all Lush based service logs.
+  sleuth:
+    baggage:
+      local-fields:
+        - lush-user-name
+      remote-fields:
+        - lush-user-name
+      correlation-enabled: true
+      correlation-fields:
+        - lush-user-name
+      tag-fields:
+        - lush-user-name
+
+logging:
+  level:
+    root: INFO
+    com.px3j.lush: ERROR
+
+
+# Lush related properties are below
+lush:
+  # Here you can specify public and private paths.
+  # security.protected-paths is a comma-separated list of paths that will be protected by Lush configured Spring Security
+  security:
+    protected-paths: /lush/example/*
+    public-paths:
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
