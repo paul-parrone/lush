@@ -1,15 +1,17 @@
+server:
+  port: 9010
+
 spring:
   application:
     name: lush-dev-test-app
+
 
 logging:
   level:
     root: INFO
     com.px3j.lush: ERROR
     lush.core.debug: DEBUG
-  pattern:
-    level: "[%32mdc{lush-user-name:-core}]"
-    correlation: "[%X{spanId},%X{traceId}]"
+    org.springframework.security: ERROR
 
 ## Spring Boot Actuator Related
 management:
@@ -17,6 +19,7 @@ management:
     web:
       exposure:
         include: configprops,env,health,httptrace,info,loggers,shutdown
+#        include: prometheus
 
   tracing:
     sampling:

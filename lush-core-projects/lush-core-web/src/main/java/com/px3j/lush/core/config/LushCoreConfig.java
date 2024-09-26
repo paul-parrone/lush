@@ -28,7 +28,6 @@ public class LushCoreConfig {
 
     public LushCoreConfig() {
         log.debug( "Lush :: LushCoreConfig initialization" );
-//        Hooks.enableAutomaticContextPropagation();
     }
 
     @Bean
@@ -40,7 +39,7 @@ public class LushCoreConfig {
         return BaggageField.create("lush-user-name");
     }
 
-//    @Bean
+    @Bean
     CurrentTraceContext.ScopeDecorator mdcScopeDecorator() {
         return MDCScopeDecorator.newBuilder()
                 .clear()

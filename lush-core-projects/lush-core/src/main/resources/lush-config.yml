@@ -31,7 +31,7 @@ lush:
     protected-paths: /lush/example/*
     public-paths:
 
-management:
-  tracing:
-    sampling:
-      probability: 1.0
+#management:
+#  tracing:
+#    sampling:
+#      probability: 1.0
