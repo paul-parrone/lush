@@ -6,7 +6,7 @@
 
     <name>Lush Service Architecture - Core</name>
     <description>Lush Service Architecture - Core</description>
-    <url>https://github.com/paul-parrone/lush-core</url>
+    <url>https://github.com/paul-parrone/lush</url>
 
     <parent>
         <groupId>com.px3j</groupId>
@@ -19,6 +19,33 @@
     <version>2024.Q4.1-SNAPSHOT</version>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- Dependencies for tracing and distributed tracing -->
+        <!-- Micrometer Tracing Bridge for Brave (or choose another tracing implementation) -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing-bridge-brave</artifactId>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

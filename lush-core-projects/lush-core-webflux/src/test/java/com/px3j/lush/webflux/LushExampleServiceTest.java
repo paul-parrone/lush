@@ -36,12 +36,9 @@ import static com.px3j.lush.web.common.Constants.TICKET_HEADER_NAME;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class LushExampleServiceTest {
     private WebTestClient webTestClient;
-    private final TicketUtil ticketUtil;
 
     @Autowired
-    public LushExampleServiceTest(TicketUtil ticketUtil) {
-        this.ticketUtil = ticketUtil;
-    }
+    private TicketUtil ticketUtil;
 
     @Autowired
     public void setUp(ApplicationContext context) {
