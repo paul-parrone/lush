@@ -7,6 +7,7 @@ spring:
 
 logging:
   level:
+    root: INFO
     lush.core.debug: DEBUG
 
 lush:
@@ -23,3 +24,15 @@ lush:
 #  crypto:
 #    secret-key: ${LUSH_PASSPORT_SECRET_KEY}
 #    access-key: ${LUSH_PASSPORT_ACCESS_KEY}
+
+## Spring Boot Actuator Related
+management:
+  endpoints:
+    web:
+      exposure:
+        include: configprops,env,health,httptrace,info,loggers,shutdown
+  #        include: prometheus
+
+  tracing:
+    sampling:
+      probability: 1.0

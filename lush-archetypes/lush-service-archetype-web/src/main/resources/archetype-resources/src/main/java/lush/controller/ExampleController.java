@@ -1,32 +1,22 @@
 package ${package}.lush.controller;
 
+import ${package}.lush.model.Cat;
+
 import com.px3j.lush.core.exception.LushException;
 import com.px3j.lush.core.exception.StackTraceToLoggerWriter;
 import com.px3j.lush.core.model.AnyModel;
 import com.px3j.lush.core.model.LushAdvice;
 import com.px3j.lush.core.model.LushContext;
 import com.px3j.lush.core.ticket.LushTicket;
-import com.px3j.lush.core.ticket.TicketUtil;
-import com.px3j.lush.core.util.CryptoHelper;
 import com.px3j.lush.web.common.LushControllerMethod;
-import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
-import ${package}.lush.model.Cat;
-import ${package}.lush.feign.ExampleServiceApi;
-
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -39,43 +29,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/lush/example")
 public class ExampleController {
-    private TicketUtil ticketUtil;
-    private ExampleServiceApi exampleServiceApi;
-
-    @Autowired
-    public ExampleController(TicketUtil ticketUtil, ExampleServiceApi exampleServiceApi) {
-        this.ticketUtil = ticketUtil;
-        this.exampleServiceApi = exampleServiceApi;
-    }
-
-    /**
-     * Example controller endpoint that will return a new set of crypto keys usable to encrypt/decrypt Lust Ticket(s).
-     *
-     * @return A map of an access key and a secret key
-     */
-    @LushControllerMethod
-    @GetMapping("crypto-gen")
-    @PreAuthorize("isAuthenticated()")
-    public Mono<AnyModel> cryptoGen() {
-        try {
-            log.info( "cryptoGen() has been called" );
-
-            SecretKey secretKey = CryptoHelper.generateKey(256);
-            IvParameterSpec ivParameterSpec = CryptoHelper.generateIv();
-
-            String encodedKey = Base64.getEncoder().encodeToString(secretKey.getEncoded());
-            String encodedIv  = Base64.getEncoder().encodeToString(ivParameterSpec.getIV());
-
-            return Mono.just(
-                    AnyModel.from(
-                            "lush.crypto.secret-key", encodedKey,
-                            "lush.crypto.access-key", encodedIv
-                    )
-            );
-        }
-        catch (NoSuchAlgorithmException e) {
-            throw new LushException( e );
-        }
+    public ExampleController() {
+        log.debug("ExampleController instantiated");
     }
 
     /**
@@ -92,9 +47,9 @@ public class ExampleController {
     @LushControllerMethod
     @GetMapping("ping")
     @PreAuthorize("isAuthenticated()")
-    public Mono<AnyModel> ping() {
+    public ResponseEntity<AnyModel> ping() {
         log.info( "ping() has been called" );
-        return Mono.just( AnyModel.from("message","Powered By Lush") );
+        return ResponseEntity.ok( AnyModel.from("message","Powered By Lush") );
     }
 
     /**
@@ -107,25 +62,9 @@ public class ExampleController {
     @LushControllerMethod
     @GetMapping("pingUser")
     @PreAuthorize("isAuthenticated()")
-    public Mono<AnyModel> pingUser( @Parameter(hidden = true) LushTicket ticket) {
+    public ResponseEntity<AnyModel> pingUser( LushTicket ticket) {
         log.info( ticket.toString() );
-        return Mono.just( AnyModel.from("message", String.format("Powered By Lush - hi: %s", ticket.getUsername())) );
-    }
-
-    /**
-     * This endpoint illustrates how you can use the included open feign library to call another service.  The traceId
-     * is carried across to the calling service.  Also, by providing the Lush Ticket, the log statements in the called
-     * service will contain the username.
-     *
-     * @param ticket The ticket representing the caller of this endpoint.
-     * @return An instance of AnyModel as returned by the remote service.
-     */
-    @LushControllerMethod
-    @GetMapping("pingRemote")
-    @PreAuthorize("isAuthenticated()")
-    public Mono<AnyModel> pingRemote(LushTicket ticket) {
-        log.debug( "calling remote" );
-        return exampleServiceApi.ping(ticketUtil.encrypt(ticket));
+        return ResponseEntity.ok( AnyModel.from("message", String.format("Powered By Lush - hi: %s", ticket.getUsername())) );
     }
 
     /**
@@ -136,8 +75,8 @@ public class ExampleController {
     @LushControllerMethod
     @GetMapping("fluxOfCats")
     @PreAuthorize("isAuthenticated()")
-    public Flux<Cat> fluxOfCats() {
-        return Flux.fromIterable(
+    public ResponseEntity<List<Cat>> fluxOfCats() {
+        return ResponseEntity.ok(
                 List.of(
                         new Cat("Gumball", "Tonkinese"),
                         new Cat("Sneeb", "Tonkinese"),
@@ -155,7 +94,7 @@ public class ExampleController {
     @LushControllerMethod
     @GetMapping("fluxOfCatsWithAdvice")
     @PreAuthorize("isAuthenticated()")
-    public Flux<Cat> fluxOfCatsWithAdvice( @Parameter(hidden = true) LushTicket ticket, @Parameter(hidden = true) LushContext lushContext ) {
+    public ResponseEntity<List<Cat>> fluxOfCatsWithAdvice( LushTicket ticket, LushContext lushContext ) {
         //
         // Advice automatically injected by Lush - you can modify it, it will be returned to the caller
         //
@@ -177,7 +116,7 @@ public class ExampleController {
         advice.addWarning( new LushAdvice.LushWarning(600, Map.of("delayedData", true)));
 
         // And return data...
-        return Flux.fromIterable(
+        return ResponseEntity.ok(
                 List.of(
                         new Cat("Gumball", "Tonkinese"),
                         new Cat("Sneeb", "Tonkinese"),
@@ -195,14 +134,14 @@ public class ExampleController {
     @LushControllerMethod
     @GetMapping("endpointHandledException")
     @PreAuthorize("isAuthenticated()")
-    public Mono<AnyModel> endpointHandledException( @Parameter(hidden = true) LushContext lushContext ) {
+    public ResponseEntity<AnyModel> endpointHandledException( LushContext lushContext ) {
         // Here, we'll use the LushAdvice to signify the failure to the consumer
         //
         LushAdvice advice = lushContext.getAdvice();
 
         try {
             methodThatThrowsIOException();
-            return Mono.just( AnyModel.from("prop1", "value1") );
+            return ResponseEntity.ok( AnyModel.from("prop1", "value1") );
         }
         catch (IOException e) {
             // Since we want to handle this ourselves, we do so here
@@ -216,7 +155,7 @@ public class ExampleController {
             // Possibly add any extras that the consumer can use:
             advice.putExtra( "message", "file not found" );  // again, this can be anything that the consumer can understand
 
-            return Mono.empty();
+            return ResponseEntity.ok( AnyModel.from("prop1", "value1") );
         }
     }
 
@@ -229,14 +168,14 @@ public class ExampleController {
     @LushControllerMethod
     @GetMapping("endpointWrappedException")
     @PreAuthorize("isAuthenticated()")
-    public Mono<AnyModel> endpointWrappedException( @Parameter(hidden = true) LushContext lushContext ) {
+    public ResponseEntity<AnyModel> endpointWrappedException( LushContext lushContext ) {
         // Here, we'll use the LushAdvice to signify the failure to the consumer
         //
         LushAdvice advice = lushContext.getAdvice();
 
         try {
             methodThatThrowsIOException();
-            return Mono.just( AnyModel.from("prop1", "value1") );
+            return ResponseEntity.ok( AnyModel.from("prop1", "value1") );
         }
         catch (IOException e) {
             // Our internal API throws a checked exception, Lush believes only in unchecked exceptions.  Endpoint can
@@ -255,12 +194,12 @@ public class ExampleController {
      */
     @GetMapping("uaeNoLush")
     @PreAuthorize("isAuthenticated()")
-    public Mono<AnyModel> uaeNoLush( @Parameter(hidden = true) LushTicket ticket) {
+    public ResponseEntity<AnyModel> uaeNoLush( LushTicket ticket) {
         // Illustration calling a method that may throw an exception, developers don't need to concern themselves with
         // these as Lush will handle it appropriately.
         methodThatThrowsUnexpectedException();
 
-        return Mono.just( AnyModel.from( "message", String.format( "%s says hi!", ticket.getUsername())) );
+        return ResponseEntity.ok( AnyModel.from( "message", String.format( "%s says hi!", ticket.getUsername())) );
     }
 
     /**
@@ -272,18 +211,18 @@ public class ExampleController {
     @LushControllerMethod
     @GetMapping("uae")
     @PreAuthorize("isAuthenticated()")
-    public Mono<AnyModel> uae( @Parameter(hidden = true) LushTicket ticket) {
+    public ResponseEntity<AnyModel> uae( LushTicket ticket) {
         // Illustration calling a method that may throw an exception, developers don't need to concern themselves with
         // these as Lush will handle it appropriately.
         methodThatThrowsUnexpectedException();
 
-        return Mono.just( AnyModel.from("message", String.format( "%s says hi!", ticket.getUsername())) );
+        return ResponseEntity.ok( AnyModel.from("message", String.format( "%s says hi!", ticket.getUsername())) );
     }
 
     @LushControllerMethod
     @GetMapping("xray")
     @PreAuthorize("isAuthenticated()")
-    public Mono<AnyModel> xray(@Parameter(hidden = true) LushTicket ticket, @Parameter(hidden = true) LushContext context ) {
+    public ResponseEntity<AnyModel> xray(LushTicket ticket, LushContext context ) {
         LushAdvice advice = context.getAdvice();
 
         log.info( "Injected ticket: {}", ticket.toString() );
@@ -299,7 +238,7 @@ public class ExampleController {
         advice.addWarning( new LushAdvice.LushWarning(1, Map.of( "collision", "field1,field2")));
         advice.addWarning( new LushAdvice.LushWarning(1, Map.of( "count", 100)));
 
-        return Mono.just( AnyModel.from("message", "LushAdvice Attached") );
+        return ResponseEntity.ok( AnyModel.from("message", "LushAdvice Attached") );
     }
 
     private void methodThatThrowsUnexpectedException() {

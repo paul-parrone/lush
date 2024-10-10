@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <name>Lush Service Architecture</name>
-    <description>Lush Service Architecture - Archetype Webflux</description>
-    <url>https://github.com/paul-parrone/lush/lush-starters/lush-service-archetype-webflux</url>
+    <description>Lush Service Architecture - Archetype Web</description>
+    <url>https://github.com/paul-parrone/lush</url>
 
     <groupId>com.px3j</groupId>
-    <artifactId>lush-service-webflux</artifactId>
+    <artifactId>lush-service-web</artifactId>
     <version>2024.Q4.1-SNAPSHOT</version>
     <packaging>maven-archetype</packaging>
 

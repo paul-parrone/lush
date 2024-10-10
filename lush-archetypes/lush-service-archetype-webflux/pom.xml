@@ -4,7 +4,7 @@
 
     <name>Lush Service Architecture</name>
     <description>Lush Service Architecture - Archetype Webflux</description>
-    <url>https://github.com/paul-parrone/lush/lush-starters/lush-service-archetype-webflux</url>
+    <url>https://github.com/paul-parrone/lush</url>
 
     <groupId>com.px3j</groupId>
     <artifactId>lush-service-webflux</artifactId>

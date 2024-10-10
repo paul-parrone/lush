@@ -19,13 +19,13 @@
     <dependencies>
         <dependency>
             <groupId>com.px3j</groupId>
-            <artifactId>lush-core-webflux</artifactId>
+            <artifactId>lush-core-web</artifactId>
             <version>2024.Q4.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
         <dependency>
@@ -68,19 +68,15 @@
         </dependency>
 
         <!-- OpenAPI dependency -->
+<!--
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-webflux-ui</artifactId>
+            <artifactId>springdoc-openapi-web-ui</artifactId>
             <version>1.6.9</version>
         </dependency>
+-->
 
-        <!-- Reactive Feign client dependencies -->
-        <dependency>
-            <groupId>com.playtika.reactivefeign</groupId>
-            <artifactId>feign-reactor-spring-cloud-starter</artifactId>
-            <version>4.2.1</version>
-            <type>pom</type>
-        </dependency>
+        <!-- TODO: Feign client dependencies -->
         <!-- -->
 
         <!-- Test Dependencies -->
