@@ -1,6 +1,6 @@
  # Lush Service Architecture
 
-Jump to the [Getting Started Guide](http://www.github.com/paul-parrone/lush-core/blob/master/docs/getting-started.md).
+Jump to the [Getting Started Guide](https://github.com/paul-parrone/lush/blob/2024.Q4.1/docs/getting-started.md).
 
 ## Introduction
 In this day and age of libraries and frameworks stacked on top of libraries and frameworks, it can be quite daunting to narrow down and pick the optimal set of components to design and build a service.
