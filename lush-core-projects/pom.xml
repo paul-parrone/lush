@@ -6,106 +6,34 @@
 
     <name>Lush Service Architecture</name>
     <description>Lush Service Architecture</description>
-    <url>https://github.com/paul-parrone/lush-core</url>
+    <url>https://github.com/paul-parrone/lush</url>
 
     <groupId>com.px3j</groupId>
     <artifactId>lush</artifactId>
     <version>2024.Q4.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <modules>
-        <module>lush-core</module>
-        <module>lush-core-web</module>
-        <module>lush-core-webflux</module>
-    </modules>
+    <!--
+        <modules>
+            <module>lush-core</module>
+            <module>lush-core-web</module>
+            <module>lush-core-webflux</module>
+        </modules>
+    -->
 
     <properties>
+        <lush.version>${project.version}</lush.version>
+
         <java.version>21</java.version>
-        <spring.boot.version>3.3.2</spring.boot.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
+
+        <spring.boot.version>3.3.2</spring.boot.version>
         <spring.cloud.version>2023.0.3</spring.cloud.version>
+
+        <lombok.version>1.18.34</lombok.version>
+        <gson.version>2.9.0</gson.version>
     </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aop</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.34</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.9.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <scope>runtime</scope>
-            <optional>true</optional>
-        </dependency>
-
-        <!-- Dependencies for monitoring (Spring Boot Admin/Actuator)-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-
-
-        <!-- Dependencies for tracing and distributed tracing -->
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-tracing-bridge-brave</artifactId>
-        </dependency>
-
-        <!-- For integration with Kibana, etc... -->
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.logstash.logback</groupId>
-            <artifactId>logstash-logback-encoder</artifactId>
-            <version>7.0.1</version>
-        </dependency>
-
-        <!-- START :: test dependencies -->
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-            <version>1.9.6</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.projectreactor</groupId>
-            <artifactId>reactor-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!-- END :: test dependencies -->
-    </dependencies>
 
     <build>
         <plugins>
@@ -154,8 +82,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-<!--
-
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
@@ -163,9 +89,27 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
--->
 
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${gson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>net.logstash.logback</groupId>
+                <artifactId>logstash-logback-encoder</artifactId>
+                <version>7.2</version>
+            </dependency>
         </dependencies>
+
     </dependencyManagement>
 
     <distributionManagement>
@@ -188,18 +132,15 @@
         -->
     </distributionManagement>
 
-<!--
     <scm>
-        <connection>scm:git:git://github.com/paul.parrone/lush-core.git</connection>
-        <developerConnection>scm:git:git@github.com:paul.parrone/lush-core.git</developerConnection>
-        <url>https://github.com/paul.parrone/lush-core</url>
+        <connection>scm:git:git://github.com/paul.parrone/lush.git</connection>
+        <developerConnection>scm:git:git@github.com:paul.parrone/lush.git</developerConnection>
+        <url>https://github.com/paul.parrone/lush</url>
         <tag>HEAD</tag>
     </scm>
--->
 
     <profiles>
         <!-- GPG Signature on release -->
-<!--
         <profile>
             <id>release-sign-artifacts</id>
             <activation>
@@ -222,7 +163,7 @@
                                     <goal>sign</goal>
                                 </goals>
                                 <configuration>
-                                    &lt;!&ndash;suppress UnresolvedMavenProperty &ndash;&gt;
+                                    <!--suppress UnresolvedMavenProperty -->
                                     <keyname>${gpg.keyname}</keyname>
                                     <passphraseServerId>${gpg.keyname}</passphraseServerId>
                                 </configuration>
@@ -258,7 +199,6 @@
                 </plugins>
             </build>
         </profile>
--->
     </profiles>
 
     <developers>
