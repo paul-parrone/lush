@@ -5,7 +5,10 @@ spring:
   application:
     name: ${artifactId}
 
+# Probably want to change the logging file path
 logging:
+  file:
+    path: /tmp
   level:
     root: INFO
     lush.core.debug: DEBUG

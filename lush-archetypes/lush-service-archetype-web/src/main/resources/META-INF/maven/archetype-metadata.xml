@@ -6,6 +6,7 @@
 
     </requiredProperties>
     <fileSets>
+
         <fileSet filtered="true" packaged="true">
             <directory>src/main/java</directory>
             <includes>
@@ -39,14 +40,32 @@
                 <include>**</include>
             </includes>
         </fileSet>
-<!--
-        <fileSet>
-            <directory>docker</directory>
+
+        <fileSet filtered="false">
+            <directory>bin</directory>
             <includes>
-                <include>docker-compose.yml</include>
+                <include>manage-lush-service.sh</include>
+                <include>make-docker-image.sh</include>
             </includes>
+            <fileMode>0755</fileMode>
         </fileSet>
--->
+        <fileSet filtered="true">
+            <directory>bin</directory>
+            <includes>
+                <include>rt-env.sh</include>
+                <include>Dockerfile</include>
+            </includes>
+            <fileMode>0755</fileMode>
+        </fileSet>
+
+        <!--
+                <fileSet>
+                    <directory>docker</directory>
+                    <includes>
+                        <include>docker-compose.yml</include>
+                    </includes>
+                </fileSet>
+        -->
         <fileSet>
             <directory>./</directory>
             <includes>

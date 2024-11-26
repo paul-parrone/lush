@@ -3,6 +3,8 @@ spring:
     name: ${artifactId}-tests
 
 logging:
+  file:
+    path: /tmp
   level:
     lush.core.debug: DEBUG
 

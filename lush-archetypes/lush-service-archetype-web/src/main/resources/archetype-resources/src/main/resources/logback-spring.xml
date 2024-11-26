@@ -2,8 +2,9 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
     <springProperty scope="context" name="springAppName" source="spring.application.name"/>
+    <springProperty scope="context" name="loggingFilePath" source="logging.file.path"/>
 
-    <property name="LOG_FILE" value="./${springAppName}"/>
+    <property name="LOG_FILE" value="${loggingFilePath}/${springAppName}"/>
 
     <!-- You can override this to have a custom pattern -->
     <property name="CONSOLE_LOG_PATTERN"
