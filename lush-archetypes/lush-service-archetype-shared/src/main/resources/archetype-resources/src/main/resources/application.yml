@@ -5,9 +5,8 @@ spring:
   application:
     name: ${artifactId}
 
-# Probably want to change the logging file path
 logging:
-  file:
+  # Probably want to change the logging file path
     path: /tmp
   level:
     root: INFO

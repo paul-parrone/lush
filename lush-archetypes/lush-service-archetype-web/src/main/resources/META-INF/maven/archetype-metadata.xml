@@ -1,10 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <archetype-descriptor
-        xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.1.0 https://maven.apache.org/xsd/archetype-descriptor-1.1.0.xsd"
-        name="lush-service">
+        xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0 http://maven.apache.org/xsd/archetype-descriptor-1.0.0.xsd">
+
     <requiredProperties>
 
     </requiredProperties>
+
     <fileSets>
 
         <fileSet filtered="true" packaged="true">
@@ -13,6 +16,7 @@
                 <include>**/*.java</include>
             </includes>
         </fileSet>
+
         <fileSet filtered="true">
             <directory>src/main/resources</directory>
             <includes>
@@ -47,25 +51,15 @@
                 <include>manage-lush-service.sh</include>
                 <include>make-docker-image.sh</include>
             </includes>
-            <fileMode>0755</fileMode>
         </fileSet>
+
         <fileSet filtered="true">
             <directory>bin</directory>
             <includes>
                 <include>rt-env.sh</include>
-                <include>Dockerfile</include>
             </includes>
-            <fileMode>0755</fileMode>
         </fileSet>
 
-        <!--
-                <fileSet>
-                    <directory>docker</directory>
-                    <includes>
-                        <include>docker-compose.yml</include>
-                    </includes>
-                </fileSet>
-        -->
         <fileSet>
             <directory>./</directory>
             <includes>
