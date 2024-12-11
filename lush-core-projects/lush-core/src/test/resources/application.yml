@@ -3,8 +3,6 @@ spring:
    name: lush-app-test
 
 management:
-  #  server:
-  #    port: 7080
   endpoints:
     web:
       exposure:
@@ -21,4 +19,4 @@ lush:
   # by default, integrated with Lush LushTicket
   security:
     protected-paths: /lush/example/*
-    public-paths: /actuator/**, /health/**, /ui/**, /swagger-ui/**, /swagger-resources/**, /v3/api-docs/**, /v3/api-docs.yaml, /swagger-ui.html, /webjars-swagger-ui, /webjars/swagger-ui/index.html, /webjars/**
+#    public-paths: /actuator/**, /health/**, /ui/**, /swagger-ui/**, /swagger-resources/**, /v3/api-docs/**, /v3/api-docs.yaml, /swagger-ui.html, /webjars-swagger-ui, /webjars/swagger-ui/index.html, /webjars/**

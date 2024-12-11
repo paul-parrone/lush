@@ -3,15 +3,7 @@ server:
 
 spring:
  application:
-   name: lush-app-test
-
-management:
-  #  server:
-  #    port: 7080
-  endpoints:
-    web:
-      exposure:
-        include: "*" #, openapi, swagger-ui
+   name: lush-webflux-test
 
 logging:
   level:
@@ -25,3 +17,17 @@ lush:
   security:
     protected-paths: /lush/example/*
     public-paths: /actuator/**, /health/**, /ui/**, /swagger-ui/**, /swagger-resources/**, /v3/api-docs/**, /v3/api-docs.yaml, /swagger-ui.html, /webjars-swagger-ui, /webjars/swagger-ui/index.html, /webjars/**
+
+  test:
+    remote-ping-url: http://localhost:9010
+
+## Spring Boot Actuator Related
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*" #, openapi, swagger-ui
+  tracing:
+    sampling:
+      probability: 1.0
+

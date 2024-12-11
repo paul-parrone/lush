@@ -1,6 +1,7 @@
 package com.px3j.lush.core.ticket;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.px3j.lush.core.util.CryptoHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -21,7 +22,7 @@ public class EncryptedTicketUtil implements TicketUtil {
     @Autowired
     public EncryptedTicketUtil(CryptoHelper cryptoHelper) {
         this.cryptoHelper = cryptoHelper;
-        this.gson = new Gson();
+        this.gson = new GsonBuilder().create();
     }
 
     public String encrypt( LushTicket ticket) {

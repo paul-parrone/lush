@@ -10,6 +10,7 @@ import com.px3j.lush.core.model.LushContext;
 import com.px3j.lush.core.ticket.LushTicket;
 import com.px3j.lush.web.common.Constants;
 import com.px3j.lush.web.common.ControllerDecorator;
+import io.micrometer.tracing.BaggageInScope;
 import io.micrometer.tracing.Span;
 import io.micrometer.tracing.Tracer;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,6 +28,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 @Aspect
 @Component
@@ -34,8 +36,9 @@ import java.lang.reflect.Method;
 public class WebControllerDecorator extends ControllerDecorator {
     private final ObjectMapper objectMapper;
 
-    public WebControllerDecorator(BaggageField lushUserNameField, Tracer tracer, ObjectMapper objectMapper) {
-        super(lushUserNameField, tracer);
+    public WebControllerDecorator(//BaggageField lushUserNameField,
+                                  Tracer tracer, ObjectMapper objectMapper) {
+        super(null, tracer);
         this.objectMapper = objectMapper;
     }
 
@@ -46,13 +49,16 @@ public class WebControllerDecorator extends ControllerDecorator {
             log.debug("intercepted request - web invocation");
         }
 
+        BaggageInScope scope = null;
+
         try {
             HttpServletRequest request = getRequest();
             LushTicket ticket = getLushTicket();
             LushContext lushContext = setLushContext(request);
+            scope = this.tracer.createBaggageInScope("lush-user-name", ticket.getUsername());
 
             if (log.isDebugEnabled()) log.debug("ticket user: " + ticket.getUsername());
-            lushUserNameField.updateValue(ticket.getUsername());
+//            lushUserNameField.updateValue(ticket.getUsername());
             MDC.put("lush-user-name", ticket.getUsername());
 
             ResponseEntity ogResponse = (ResponseEntity) invokeControllerMethod(joinPoint, lushContext, ticket);
@@ -63,6 +69,8 @@ public class WebControllerDecorator extends ControllerDecorator {
         }
         finally {
             MDC.remove("lush-user-name");
+            if (scope != null) scope.close();
+            if (log.isDebugEnabled()) log.debug("****");
         }
     }
 

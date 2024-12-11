@@ -1,10 +1,9 @@
-package com.px3j.lush.web;
+package com.px3j.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.px3j.example.service.LushExampleServiceApp;
-import com.px3j.example.service.model.Cat;
+import com.px3j.service.model.Cat;
 import com.px3j.lush.core.model.LushAdvice;
 import com.px3j.lush.core.ticket.LushTicket;
 import com.px3j.lush.core.ticket.TicketUtil;
@@ -31,10 +30,10 @@ import java.util.concurrent.TimeUnit;
 import static com.px3j.lush.web.common.Constants.TICKET_HEADER_NAME;
 
 @Slf4j(topic="lush.core.debug")
-@ActiveProfiles( profiles = {"developer", "clear-ticket"})
-@SpringBootTest(classes={LushExampleServiceApp.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles( profiles = {"clear-ticket"})
+@SpringBootTest(classes={LushServiceApp.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class LushExampleServiceTest {
+public class LushServiceAppTests {
     @Autowired
     private TestRestTemplate restTemplate;
 
@@ -58,7 +57,7 @@ public class LushExampleServiceTest {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
-                "/lush/example/ping",
+                "/lush/show/ping",
                 HttpMethod.GET,
                 entity,
                 String.class);
@@ -83,7 +82,7 @@ public class LushExampleServiceTest {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
-                "/lush/example/pingUser",
+                "/lush/show/pingUser",
                 HttpMethod.GET,
                 entity,
                 String.class
@@ -108,7 +107,7 @@ public class LushExampleServiceTest {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
-                "/lush/example/fluxOfCats",
+                "/lush/cat/fluxOfCats",
                 HttpMethod.GET,
                 entity,
                 String.class
@@ -150,7 +149,7 @@ public class LushExampleServiceTest {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         ResponseEntity<Map> response = restTemplate.exchange(
-                "/lush/example/uae",
+                "/lush/show/uae",
                 HttpMethod.GET,
                 entity,
                 Map.class
@@ -174,7 +173,7 @@ public class LushExampleServiceTest {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         ResponseEntity<Map> response = restTemplate.exchange(
-                "/lush/example/uaeNoLush",
+                "/lush/show/uaeNoLush",
                 HttpMethod.GET,
                 entity,
                 Map.class
@@ -204,7 +203,7 @@ public class LushExampleServiceTest {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
-                "/lush/example/xray",
+                "/lush/show/xray",
                 HttpMethod.GET,
                 entity,
                 String.class
@@ -245,7 +244,7 @@ public class LushExampleServiceTest {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         ResponseEntity<List<Cat>> response = restTemplate.exchange(
-                "/lush/example/fluxOfCatsWithAdvice",
+                "/lush/cat/fluxOfCatsWithAdvice",
                 HttpMethod.GET,
                 entity,
                 new ParameterizedTypeReference<List<Cat>>() {}

@@ -1,8 +1,8 @@
-package ${package}.lush.model;
+package com.px3j.service.cat;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor

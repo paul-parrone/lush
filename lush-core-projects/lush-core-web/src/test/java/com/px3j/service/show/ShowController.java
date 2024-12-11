@@ -1,7 +1,9 @@
-package ${package}.lush.controller;
+package com.px3j.service.show;
 
-import ${package}.lush.model.Cat;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.px3j.service.show.impl.FeignRemoteServiceImpl;
+import com.px3j.service.show.impl.RestRemoteServiceImpl;
 import com.px3j.lush.core.exception.LushException;
 import com.px3j.lush.core.exception.StackTraceToLoggerWriter;
 import com.px3j.lush.core.model.AnyModel;
@@ -9,6 +11,7 @@ import com.px3j.lush.core.model.LushAdvice;
 import com.px3j.lush.core.model.LushContext;
 import com.px3j.lush.core.ticket.LushTicket;
 import com.px3j.lush.web.common.LushControllerMethod;
+import io.micrometer.tracing.Tracer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,10 +29,16 @@ import java.util.Map;
  */
 @Slf4j
 @RestController
-@RequestMapping("/lush/example")
-public class ExampleController {
-    public ExampleController() {
-        log.debug("ExampleController instantiated");
+@RequestMapping("/lush/show")
+public class ShowController {
+    private final FeignRemoteServiceImpl feignRemoteService;
+    private final RestRemoteServiceImpl restRemoteService;
+    private final Tracer tracer;
+
+    public ShowController(FeignRemoteServiceImpl feignRemoteService, RestRemoteServiceImpl restRemoteService, Tracer tracer) {
+        this.feignRemoteService = feignRemoteService;
+        this.restRemoteService = restRemoteService;
+        this.tracer = tracer;
     }
 
     /**
@@ -67,62 +75,38 @@ public class ExampleController {
         return ResponseEntity.ok( AnyModel.from("message", String.format("Powered By Lush - hi: %s", ticket.getUsername())) );
     }
 
-    /**
-     * This endpoint illustrates how you can use a Flux to return a collection of data back to the caller.
-     *
-     * @return A Flux that publishes a list of Cats.
-     */
     @LushControllerMethod
-    @GetMapping("fluxOfCats")
+    @GetMapping("pingRemote")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<Cat>> fluxOfCats() {
-        return ResponseEntity.ok(
-                List.of(
-                        new Cat("Gumball", "Tonkinese"),
-                        new Cat("Sneeb", "Tonkinese"),
-                        new Cat("Hobbes", "Domestic")
+    public ResponseEntity<AnyModel> pingRemote( LushTicket ticket) {
+        log.info( ticket.toString() );
+        String ticketJson = null;
 
-                )
-        );
+        try {
+            ticketJson = new ObjectMapper().writeValueAsString( ticket );
+        } catch (JsonProcessingException e) {
+            ticketJson = "";
+        }
+
+        return ResponseEntity.ok( feignRemoteService.ping( ticketJson ) );
     }
 
-    /**
-     * This endpoint illustrates how you can use a Flux to return a collection of data back to the caller.
-     *
-     * @return A Flux that publishes a list of Cats.
-     */
     @LushControllerMethod
-    @GetMapping("fluxOfCatsWithAdvice")
+    @GetMapping("pingRemoteRt")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<Cat>> fluxOfCatsWithAdvice( LushTicket ticket, LushContext lushContext ) {
-        //
-        // Advice automatically injected by Lush - you can modify it, it will be returned to the caller
-        //
-        LushAdvice advice = lushContext.getAdvice();
+    public ResponseEntity<AnyModel> pingRemoteRt( LushTicket ticket) {
+        log.info( ticket.toString() );
+        String ticketJson = null;
 
-        // You can set a status code for this request - this is different than the HTTP status code, with Lush
-        // all requests will return a 200 status code, you use LushAdvice to specify the application level
-        // status code,
-        advice.setStatusCode( 0 );
+        try {
+            log.info( "Scope:" + this.tracer.getAllBaggage() );
+            ticketJson = new ObjectMapper().writeValueAsString( ticket );
+            return ResponseEntity.ok( restRemoteService.ping( ticketJson ) );
+        }
+        catch (JsonProcessingException e) {
+            return ResponseEntity.ok( AnyModel.from("message", "couldn't ping remote") );
+        }
 
-        // Advice also lets you set 'extras', this is any number of key/value pairs that is usable to your
-        // callers.
-        advice.putExtra( "helloMessage", String.format("hello: %s", ticket.getUsername()));
-        advice.putExtra( "hasMoreData", false );
-
-        // Warnings are a special category of return type.  You can use these to signify specific things that
-        // your caller may need to respond to.  Each LusWarning can have a status code and a set of key/value pairs
-        // representing details of the warning.
-        advice.addWarning( new LushAdvice.LushWarning(600, Map.of("delayedData", true)));
-
-        // And return data...
-        return ResponseEntity.ok(
-                List.of(
-                        new Cat("Gumball", "Tonkinese"),
-                        new Cat("Sneeb", "Tonkinese"),
-                        new Cat("Hobbes", "Domestic")
-
-                ));
     }
 
     /**

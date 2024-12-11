@@ -1,5 +1,8 @@
 package com.px3j.example.service.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.px3j.example.service.feign.ExampleServiceApi;
 import com.px3j.example.service.model.Cat;
 import com.px3j.lush.core.exception.LushException;
 import com.px3j.lush.core.exception.StackTraceToLoggerWriter;
@@ -8,7 +11,9 @@ import com.px3j.lush.core.model.LushAdvice;
 import com.px3j.lush.core.model.LushContext;
 import com.px3j.lush.core.ticket.LushTicket;
 import com.px3j.lush.web.common.LushControllerMethod;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +34,15 @@ import java.util.Map;
 @RestController
 @RequestMapping("/lush/example")
 public class ExampleController {
+    private final ExampleServiceApi exampleServiceApi;
+
+    @Autowired
+    public ExampleController( ExampleServiceApi exampleServiceApi)
+    {
+        this.exampleServiceApi = exampleServiceApi;
+        log.debug("ExampleController instantiated");
+    }
+
     /**
      * Example controller endpoint that returns a String (wrapped by a Mono) as we are using Spring WebFlux.
      *
@@ -43,7 +57,9 @@ public class ExampleController {
     @LushControllerMethod
     @GetMapping("ping")
     @PreAuthorize("isAuthenticated()")
+    @SneakyThrows
     public Mono<AnyModel> ping() {
+        new ObjectMapper().writeValueAsString( new Cat("Gumball", "Tonkinese") );
         log.info( "ping() has been called" );
         return Mono.just( AnyModel.from("message","Powered By Lush") );
     }
@@ -63,11 +79,27 @@ public class ExampleController {
         return Mono.just( AnyModel.from("message", String.format("Powered By Lush - hi: %s", ticket.getUsername())) );
     }
 
-    /**
-     * This endpoint illustrates how you can use a Flux to return a collection of data back to the caller.
-     *
-     * @return A Flux that publishes a list of Cats.
-     */
+    @LushControllerMethod
+    @GetMapping("pingRemote")
+    @PreAuthorize("isAuthenticated()")
+    public Mono<AnyModel> pingRemote(LushTicket ticket) {
+        log.info( ticket.toString() );
+        String ticketJson = null;
+
+        try {
+            ticketJson = new ObjectMapper().writeValueAsString( ticket );
+        } catch (JsonProcessingException e) {
+            ticketJson = "";
+        }
+
+        return exampleServiceApi.ping(ticketJson);
+    }
+
+        /**
+         * This endpoint illustrates how you can use a Flux to return a collection of data back to the caller.
+         *
+         * @return A Flux that publishes a list of Cats.
+         */
     @LushControllerMethod
     @GetMapping("fluxOfCats")
     @PreAuthorize("isAuthenticated()")
