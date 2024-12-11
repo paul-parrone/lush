@@ -13,6 +13,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 //@FeignClient(name = "exampleService", url = "${CHANGE-TO-REMOTE-SERVICE-NAME}")
 @Headers({ "Accept: application/json" })
 public interface FeignRemoteServiceImpl extends RemoteService {
-    @RequestMapping(method = RequestMethod.GET, value = "/lush/example/ping")
+    @RequestMapping(method = RequestMethod.GET, value = "/lush/show/ping")
     AnyModel ping(@RequestHeader(Constants.TICKET_HEADER_NAME) String ticket);
 }

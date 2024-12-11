@@ -106,7 +106,6 @@ public class ShowController {
         catch (JsonProcessingException e) {
             return ResponseEntity.ok( AnyModel.from("message", "couldn't ping remote") );
         }
-
     }
 
     /**

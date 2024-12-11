@@ -10,6 +10,7 @@ import com.px3j.lush.core.model.LushContext;
 import com.px3j.lush.core.ticket.LushTicket;
 import com.px3j.lush.web.common.Constants;
 import com.px3j.lush.web.common.ControllerDecorator;
+import com.px3j.lush.web.common.LushWrappedInvocation;
 import io.micrometer.tracing.BaggageInScope;
 import io.micrometer.tracing.Span;
 import io.micrometer.tracing.Tracer;
@@ -36,9 +37,8 @@ import java.util.Objects;
 public class WebControllerDecorator extends ControllerDecorator {
     private final ObjectMapper objectMapper;
 
-    public WebControllerDecorator(//BaggageField lushUserNameField,
-                                  Tracer tracer, ObjectMapper objectMapper) {
-        super(null, tracer);
+    public WebControllerDecorator(Tracer tracer, ObjectMapper objectMapper) {
+        super(tracer);
         this.objectMapper = objectMapper;
     }
 
@@ -53,46 +53,24 @@ public class WebControllerDecorator extends ControllerDecorator {
 
         try {
             HttpServletRequest request = getRequest();
-            LushTicket ticket = getLushTicket();
             LushContext lushContext = setLushContext(request);
-            scope = this.tracer.createBaggageInScope("lush-user-name", ticket.getUsername());
 
+            LushTicket ticket = getLushTicket();
             if (log.isDebugEnabled()) log.debug("ticket user: " + ticket.getUsername());
-//            lushUserNameField.updateValue(ticket.getUsername());
+
+            scope = this.tracer.createBaggageInScope("lush-user-name", ticket.getUsername());
             MDC.put("lush-user-name", ticket.getUsername());
 
-            ResponseEntity ogResponse = (ResponseEntity) invokeControllerMethod(joinPoint, lushContext, ticket);
-            return getMutatedResponse(ogResponse, lushContext);
-        }
-        catch (Throwable e) {
-            throw new RuntimeException(e);
+            LushWrappedInvocation<ResponseEntity<?>> lushMethod = LushWrappedInvocation.wrap(joinPoint, lushContext, ticket);
+            ResponseEntity<?> ogResponse = lushMethod.invoke();
+
+            return  getMutatedResponse(ogResponse != null ? ogResponse : ResponseEntity.ok().build(), lushContext);
         }
         finally {
             MDC.remove("lush-user-name");
             if (scope != null) scope.close();
-            if (log.isDebugEnabled()) log.debug("****");
         }
     }
-
-    protected Object invokeControllerMethod(ProceedingJoinPoint pjp, LushContext apiContext, LushTicket ticket) {
-        try {
-            // Get the target method from the join point, use this to inject parameters.
-            Method method = getMethodBeingCalled(pjp);
-
-            // If the method declares an argument of LushContext, inject it (we inject it by copying the values)
-            injectLushContext(method, pjp, apiContext);
-            // If the method declares an argument of LushTicket, inject it (we inject it by copying the values)
-            injectTicket(method, pjp, ticket);
-
-            // Proceed with the target method
-            return pjp.proceed();
-        }
-        catch (final Throwable throwable) {
-            errorHandler(apiContext, throwable);
-            return ResponseEntity.ok().build();
-        }
-    }
-
 
     /**
      * Sets the LushContext for the given HttpServletRequest. This method generates
