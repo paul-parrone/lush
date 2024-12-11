@@ -7,6 +7,14 @@ logging:
     path: /tmp
   level:
     lush.core.debug: DEBUG
+    ${package}.lush: DEBUG
+    org.springframework.cloud.openfeign: DEBUG
+
+feign:
+  client:
+    config:
+      default:
+        loggerLevel: FULL
 
 lush:
   # Here you can specify public and private paths.
@@ -15,6 +23,8 @@ lush:
   security:
     protected-paths: /lush/example/**
     public-paths: /actuator/**, /health/**, /swagger-ui/**, /swagger-resources/**, /v3/api-docs/**, /v3/api-docs.yaml, /swagger-ui.html, /webjars-swagger-ui, /webjars/**
+  test:
+    remote-ping-url: http://localhost:9010
 
 # If you aren't using the clear-ticket Spring profile, then you must provide the secret-key and access-key in order to
 # decrypt the Lush Ticket.  This also assumes that your Lush Ticket Service uses the same keys to encrypt the Ticket

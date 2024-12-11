@@ -6,7 +6,8 @@ spring:
     name: ${artifactId}
 
 logging:
-  # Probably want to change the logging file path
+  file:
+    # Probably want to change the logging file path
     path: /tmp
   level:
     root: INFO
@@ -19,7 +20,9 @@ lush:
   security:
     protected-paths: /lush/example/*
     public-paths: /actuator/**, /health/**, /ui/**, /swagger-ui/**, /swagger-resources/**, /v3/api-docs/**, /v3/api-docs.yaml, /swagger-ui.html, /webjars-swagger-ui, /webjars/swagger-ui/index.html, /webjars/**
-
+  test:
+    remote-ping-url: http://localhost:9010
+    
 # If you aren't using the clear-ticket Spring profile, then you must provide the secret-key and access-key in order to
 # decrypt the Lush Ticket.  This also assumes that your Lush Ticket Service uses the same keys to encrypt the Ticket
 #

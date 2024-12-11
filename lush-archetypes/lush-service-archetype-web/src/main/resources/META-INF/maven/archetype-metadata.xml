@@ -5,11 +5,9 @@
         xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0 http://maven.apache.org/xsd/archetype-descriptor-1.0.0.xsd">
 
     <requiredProperties>
-
     </requiredProperties>
 
     <fileSets>
-
         <fileSet filtered="true" packaged="true">
             <directory>src/main/java</directory>
             <includes>
@@ -17,7 +15,7 @@
             </includes>
         </fileSet>
 
-        <fileSet filtered="true">
+        <fileSet filtered="true" packaged="true">
             <directory>src/main/resources</directory>
             <includes>
                 <include>**</include>
@@ -26,18 +24,21 @@
                 <exclude>logback-spring.xml</exclude>
             </excludes>
         </fileSet>
-        <fileSet filtered="false">
+
+        <fileSet filtered="false" packaged="true">
             <directory>src/main/resources</directory>
             <includes>
                 <include>logback-spring.xml</include>
             </includes>
         </fileSet>
+
         <fileSet filtered="true" packaged="true">
             <directory>src/test/java</directory>
             <includes>
                 <include>**/*.java</include>
             </includes>
         </fileSet>
+
         <fileSet filtered="true">
             <directory>src/test/resources</directory>
             <includes>
@@ -45,7 +46,7 @@
             </includes>
         </fileSet>
 
-        <fileSet filtered="false">
+        <fileSet filtered="false" packaged="false">
             <directory>bin</directory>
             <includes>
                 <include>manage-lush-service.sh</include>
@@ -53,14 +54,14 @@
             </includes>
         </fileSet>
 
-        <fileSet filtered="true">
+        <fileSet filtered="true" packaged="false">
             <directory>bin</directory>
             <includes>
                 <include>rt-env.sh</include>
             </includes>
         </fileSet>
 
-        <fileSet>
+        <fileSet packaged="false">
             <directory>./</directory>
             <includes>
                 <include>README.MD</include>
