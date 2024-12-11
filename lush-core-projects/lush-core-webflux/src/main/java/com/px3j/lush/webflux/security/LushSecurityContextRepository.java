@@ -7,10 +7,14 @@ import com.px3j.lush.web.common.Constants;
 import com.px3j.lush.web.security.TicketAuthenticationToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.web.server.context.ServerSecurityContextRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -31,37 +35,45 @@ public class LushSecurityContextRepository implements ServerSecurityContextRepos
         return Mono.empty();
     }
 
+
     @Override
     public Mono<SecurityContext> load(ServerWebExchange exchange) {
-        List<String> ticketList = exchange.getRequest().getHeaders().get(Constants.TICKET_HEADER_NAME);
+        String ticketFromHeader = getTicketFromHeader(exchange);
+        if( StringUtils.hasText(ticketFromHeader) ) {
+            try {
+                LushTicket ticket = ticketUtil.decrypt(ticketFromHeader);
 
-        // Header isn't available, deny access...
-        if(ticketList == null || ticketList.isEmpty()) {
+                TicketAuthenticationToken authToken = new TicketAuthenticationToken(ticket);
+                authToken.setAuthenticated(true);
+                if( log.isDebugEnabled() ) {
+                    log.debug( "ALLOW: userName: " + ticket.getUsername() );
+                }
+
+                return Mono.just( new SecurityContextImpl(authToken) );
+            }
+            catch (JsonSyntaxException e) {
+                if( log.isDebugEnabled() ) {
+                    log.debug( "DENY: Invalid JSON in Lush Ticket header: " + Constants.TICKET_HEADER_NAME );
+                }
+                return Mono.empty();
+            }
+        }
+        else {
+            // Header isn't available, deny access...
             if( log.isDebugEnabled() ) {
                 log.debug( "DENY: Request is missing Lush Ticket header: " + Constants.TICKET_HEADER_NAME );
             }
             return Mono.empty();
         }
+    }
 
-        // Header is an array, get the first element.
-        final String ticketFromHeader = ticketList.get(0);
+    private String getTicketFromHeader(ServerWebExchange exchange) {
+        List<String> ticketList = exchange.getRequest().getHeaders().get(Constants.TICKET_HEADER_NAME);
 
-        try {
-            LushTicket ticket = ticketUtil.decrypt(ticketFromHeader);
-
-            TicketAuthenticationToken authToken = new TicketAuthenticationToken(ticket);
-            authToken.setAuthenticated(true);
-            if( log.isDebugEnabled() ) {
-                log.debug( "ALLOW: userName: " + ticket.getUsername() );
-            }
-
-            return Mono.just( new SecurityContextImpl(authToken) );
+        if( ticketList == null || ticketList.isEmpty() ) {
+            return null;
         }
-        catch (JsonSyntaxException e) {
-            if( log.isDebugEnabled() ) {
-                log.debug( "DENY: Invalid JSON in Lush Ticket header: " + Constants.TICKET_HEADER_NAME );
-            }
-            return Mono.empty();
-        }
+
+        return ticketList.getFirst();
     }
 }

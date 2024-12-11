@@ -3,17 +3,12 @@ server:
 
 spring:
   application:
-    name: lush-web-test
-#  cloud:
-#    openfeign:
-#      okhttp:
-#        enabled: true
+    name: lush-web-service
 
 logging:
   level:
     root: INFO
     lush.core.debug: DEBUG
-    com.px3j.example.service.feign: DEBUG
 
 lush:
   # Here you can specify public and private paths.
