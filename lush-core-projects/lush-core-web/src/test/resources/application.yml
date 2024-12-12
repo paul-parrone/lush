@@ -39,3 +39,9 @@ management:
       tag-fields: lush-user-name
       correlation.fields: lush-user-name
 
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html

@@ -10,13 +10,12 @@
 
     <parent>
         <groupId>com.px3j</groupId>
-        <artifactId>lush</artifactId>
+        <artifactId>lush-core-projects</artifactId>
         <version>2024.Q4.1-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>lush-core-web</artifactId>
-    <version>2024.Q4.1-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
@@ -67,6 +66,11 @@
             <groupId>io.github.openfeign</groupId>
             <artifactId>feign-micrometer</artifactId>
             <version>13.1</version> <!-- Ensure this version matches your project's compatibility -->
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.3.0</version> <!-- Use the latest version -->
         </dependency>
 
         <!-- Test Dependencies -->

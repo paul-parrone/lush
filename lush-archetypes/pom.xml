@@ -4,18 +4,24 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <name>Lush Service Architecture - Core</name>
-    <description>Lush Service Architecture - Core</description>
+    <name>Lush Service Architecture - Archetype Parent</name>
+    <description>Lush Service Architecture - Archetype Parent</description>
     <url>https://github.com/paul-parrone/lush</url>
 
     <parent>
         <groupId>com.px3j</groupId>
-        <artifactId>lush-core-projects</artifactId>
+        <artifactId>lush</artifactId>
         <version>2024.Q4.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>lush-core</artifactId>
+    <artifactId>lush-archetypes</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>lush-service-archetype-web</module>
+        <module>lush-service-archetype-webflux</module>
+    </modules>
 
     <dependencies>
         <dependency>
@@ -53,10 +59,4 @@
             <artifactId>gson</artifactId>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-        </plugins>
-    </build>
-
 </project>

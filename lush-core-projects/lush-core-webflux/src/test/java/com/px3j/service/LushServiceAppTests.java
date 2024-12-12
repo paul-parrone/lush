@@ -1,11 +1,10 @@
-package ${package};
+package com.px3j.service;
 
 import com.google.gson.Gson;
-import ${package}.LushServiceApp;
-import ${package}.lush.model.Cat;
 import com.px3j.lush.core.model.LushAdvice;
 import com.px3j.lush.core.ticket.LushTicket;
 import com.px3j.lush.core.ticket.TicketUtil;
+import com.px3j.service.cat.Cat;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -36,12 +35,9 @@ import static com.px3j.lush.web.common.Constants.TICKET_HEADER_NAME;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class LushServiceAppTests {
     private WebTestClient webTestClient;
-    private final TicketUtil ticketUtil;
 
     @Autowired
-    public LushServiceAppTests(TicketUtil ticketUtil) {
-        this.ticketUtil = ticketUtil;
-    }
+    private TicketUtil ticketUtil;
 
     @Autowired
     public void setUp(ApplicationContext context) {
