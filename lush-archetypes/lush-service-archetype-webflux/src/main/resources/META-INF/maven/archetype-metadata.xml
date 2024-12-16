@@ -26,7 +26,7 @@
                 <exclude>logback-spring.xml</exclude>
             </excludes>
         </fileSet>
-        <fileSet filtered="false">
+        <fileSet>
             <directory>src/main/resources</directory>
             <includes>
                 <include>logback-spring.xml</include>
@@ -45,7 +45,7 @@
             </includes>
         </fileSet>
 
-        <fileSet filtered="false">
+        <fileSet>
             <directory>bin</directory>
             <includes>
                 <include>manage-lush-service.sh</include>

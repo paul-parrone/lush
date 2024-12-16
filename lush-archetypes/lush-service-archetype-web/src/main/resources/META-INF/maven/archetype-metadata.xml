@@ -15,7 +15,7 @@
             </includes>
         </fileSet>
 
-        <fileSet filtered="true" packaged="true">
+        <fileSet filtered="true">
             <directory>src/main/resources</directory>
             <includes>
                 <include>**</include>
@@ -23,13 +23,6 @@
             <excludes>
                 <exclude>logback-spring.xml</exclude>
             </excludes>
-        </fileSet>
-
-        <fileSet filtered="false" packaged="true">
-            <directory>src/main/resources</directory>
-            <includes>
-                <include>logback-spring.xml</include>
-            </includes>
         </fileSet>
 
         <fileSet filtered="true" packaged="true">
@@ -46,7 +39,7 @@
             </includes>
         </fileSet>
 
-        <fileSet filtered="false" packaged="false">
+        <fileSet>
             <directory>bin</directory>
             <includes>
                 <include>manage-lush-service.sh</include>
@@ -54,14 +47,14 @@
             </includes>
         </fileSet>
 
-        <fileSet filtered="true" packaged="false">
+        <fileSet filtered="true">
             <directory>bin</directory>
             <includes>
                 <include>rt-env.sh</include>
             </includes>
         </fileSet>
 
-        <fileSet packaged="false">
+        <fileSet>
             <directory>./</directory>
             <includes>
                 <include>README.MD</include>
