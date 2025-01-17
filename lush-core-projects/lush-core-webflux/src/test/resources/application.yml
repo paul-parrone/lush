@@ -15,7 +15,7 @@ lush:
   # protected-paths is a comma-separated list of paths that will be protected by the Spring Security
   # by default, integrated with Lush LushTicket
   security:
-    protected-paths: /lush/cat/*, /lush/show/**
+    protected-paths: /lush/cat/*, /lush/example/**
     public-paths: /actuator/**, /health/**, /ui/**, /swagger-ui/**, /swagger-resources/**, /v3/api-docs/**, /v3/api-docs.yaml, /swagger-ui.html, /webjars-swagger-ui, /webjars/swagger-ui/index.html, /webjars/**
   test:
     remote-ping-url: http://localhost:9010

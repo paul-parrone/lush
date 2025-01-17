@@ -29,7 +29,7 @@ import java.util.Map;
  */
 @Slf4j
 @RestController
-@RequestMapping("/lush/show")
+@RequestMapping("/lush/example")
 public class ShowController {
     private final FeignRemoteServiceImpl feignRemoteService;
     private final RestRemoteServiceImpl restRemoteService;
@@ -80,7 +80,7 @@ public class ShowController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<AnyModel> pingRemote( LushTicket ticket) {
         log.info( ticket.toString() );
-        String ticketJson = null;
+        String ticketJson;
 
         try {
             ticketJson = new ObjectMapper().writeValueAsString( ticket );
@@ -96,7 +96,7 @@ public class ShowController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<AnyModel> pingRemoteRt( LushTicket ticket) {
         log.info( ticket.toString() );
-        String ticketJson = null;
+        String ticketJson;
 
         try {
             log.info( "Scope:" + this.tracer.getAllBaggage() );

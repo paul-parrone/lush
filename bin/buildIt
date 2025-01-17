@@ -87,7 +87,7 @@ LUSH_SRC_ROOT="$1"
 
 pushd "$LUSH_SRC_ROOT"
 
-#buildAndInstallCore
+buildAndInstallCore
 
 # copy the web/webflux core test code corresponding archetype with variable replacement.
 copyCoreSourceToArchetype "web"

@@ -25,7 +25,7 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/lush/show")
+@RequestMapping("/lush/example")
 public class ShowController {
     private final FeignRemoteServiceImpl feignRemoteService;
     private final RestRemoteServiceImpl restRemoteService;
@@ -77,7 +77,7 @@ public class ShowController {
     @PreAuthorize("isAuthenticated()")
     public Mono<AnyModel> pingRemote(LushTicket ticket) {
         log.info( ticket.toString() );
-        String ticketJson = null;
+        String ticketJson;
 
         try {
             ticketJson = new ObjectMapper().writeValueAsString( ticket );
@@ -93,7 +93,7 @@ public class ShowController {
     @PreAuthorize("isAuthenticated()")
     public Mono<AnyModel> pingRemoteRt(LushTicket ticket) {
         log.info( ticket.toString() );
-        String ticketJson = null;
+        String ticketJson;
 
         try {
             ticketJson = new ObjectMapper().writeValueAsString( ticket );

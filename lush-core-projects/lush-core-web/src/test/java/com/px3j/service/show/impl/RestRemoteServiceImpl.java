@@ -28,7 +28,7 @@ public class RestRemoteServiceImpl implements RemoteService {
         headers.set(Constants.TICKET_HEADER_NAME, ticket);
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        String url = baseUrl + "/lush/show/ping";
+        String url = baseUrl + "/lush/example/ping";
 
         ResponseEntity<AnyModel> response = restTemplate.exchange(url, HttpMethod.GET, entity, AnyModel.class);
         return response.getBody();

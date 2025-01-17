@@ -14,6 +14,6 @@ import reactor.core.publisher.Mono;
 //@FeignClient(name = "exampleService", url = "${CHANGE-TO-REMOTE-SERVICE-NAME}")
 @Headers({ "Accept: application/json" })
 public interface FeignRemoteServiceImpl extends RemoteService {
-    @RequestMapping(method = RequestMethod.GET, value = "/lush/show/ping")
+    @RequestMapping(method = RequestMethod.GET, value = "/lush/example/ping")
     Mono<AnyModel> ping(@RequestHeader(Constants.TICKET_HEADER_NAME) String ticket);
 }

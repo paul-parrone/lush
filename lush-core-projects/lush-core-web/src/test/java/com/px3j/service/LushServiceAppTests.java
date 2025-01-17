@@ -22,6 +22,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -46,7 +47,7 @@ public class LushServiceAppTests {
     }
 
     @Test
-    public void testPing() throws Exception {
+    public void testPing()  {
         log.info( "START: testPing" );
 
         LushTicket ticket = new LushTicket("paul", "", List.of(new SimpleGrantedAuthority("user")));
@@ -57,7 +58,7 @@ public class LushServiceAppTests {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
-                "/lush/show/ping",
+                "/lush/example/ping",
                 HttpMethod.GET,
                 entity,
                 String.class);
@@ -82,7 +83,7 @@ public class LushServiceAppTests {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
-                "/lush/show/pingUser",
+                "/lush/example/pingUser",
                 HttpMethod.GET,
                 entity,
                 String.class
@@ -117,7 +118,8 @@ public class LushServiceAppTests {
         ObjectMapper objectMapper = new ObjectMapper();
         List<Cat> cats;
         try {
-            cats = objectMapper.readValue(responseBody, new TypeReference<List<Cat>>() {});
+            cats = objectMapper.readValue(responseBody, new TypeReference<>() {
+            });
         } catch (Exception e) {
             log.error("Error parsing response", e);
             return;
@@ -149,7 +151,7 @@ public class LushServiceAppTests {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         ResponseEntity<Map> response = restTemplate.exchange(
-                "/lush/show/uae",
+                "/lush/example/uae",
                 HttpMethod.GET,
                 entity,
                 Map.class
@@ -173,7 +175,7 @@ public class LushServiceAppTests {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         ResponseEntity<Map> response = restTemplate.exchange(
-                "/lush/show/uaeNoLush",
+                "/lush/example/uaeNoLush",
                 HttpMethod.GET,
                 entity,
                 Map.class
@@ -181,7 +183,7 @@ public class LushServiceAppTests {
 
         List<String> adviceHeader = response.getHeaders().get("x-lush-advice");
         if (adviceHeader != null && !adviceHeader.isEmpty()) {
-            LushAdvice advice = new Gson().fromJson(adviceHeader.get(0), LushAdvice.class);
+            LushAdvice advice = new Gson().fromJson(adviceHeader.getFirst(), LushAdvice.class);
             log.info("Lush LushAdvice: {}", advice.toString());
         }
 
@@ -203,7 +205,7 @@ public class LushServiceAppTests {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
-                "/lush/show/xray",
+                "/lush/example/xray",
                 HttpMethod.GET,
                 entity,
                 String.class
@@ -218,16 +220,14 @@ public class LushServiceAppTests {
         @Test
         public void testWithAdviceThreaded() throws Exception {
             int numThreads = 15;
-            ExecutorService executor = Executors.newFixedThreadPool( numThreads );
+            try( ExecutorService executor = Executors.newFixedThreadPool( numThreads ); ) {
+                for( int i=0; i<numThreads; i++ ) {
+                    executor.submit( () -> testFluxOfCatsWithAdviceImpl(UUID.randomUUID().toString()));
+                }
 
-            for( int i=0; i<numThreads; i++ ) {
-                executor.submit( () -> {
-                    testFluxOfCatsWithAdviceImpl(UUID.randomUUID().toString());
-                });
+                executor.shutdown();
+                executor.awaitTermination( 10, TimeUnit.SECONDS );
             }
-
-            executor.shutdown();
-            executor.awaitTermination( 10, TimeUnit.SECONDS );
         }
 
     private void testFluxOfCatsWithAdviceImpl(String username) {
@@ -247,21 +247,22 @@ public class LushServiceAppTests {
                 "/lush/cat/fluxOfCatsWithAdvice",
                 HttpMethod.GET,
                 entity,
-                new ParameterizedTypeReference<List<Cat>>() {}
+                new ParameterizedTypeReference<>() {
+                }
         );
 
         displayAdvice(response.getHeaders().getFirst("x-lush-advice"));
 
-        response.getBody().forEach(cat -> log.info("{}", cat));
+        Objects.requireNonNull(response.getBody()).forEach(cat -> log.info("{}", cat));
     }
 
     private void displayAdvice(HttpHeaders headers) {
         List<String> adviceHeader = headers.get("x-lush-advice");
-        if (adviceHeader == null || adviceHeader.size() == 0) {
+        if (adviceHeader == null || adviceHeader.isEmpty()) {
             log.info("No Lush LushAdvice available");
             return;
         }
-        displayAdvice( adviceHeader.get(0) );
+        displayAdvice( adviceHeader.getFirst() );
     }
 
     private void displayAdvice(String adviceJson) {
