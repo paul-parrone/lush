@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+
+set -e  # Exit immediately if any command fails
+
+buildAndInstallCore() {
+  mvn clean install
+}
+
+copySourceImpl() {
+  # Arguments
+  local SOURCE_DIR="$1"
+  local TARGET_DIR="$2"
+
+  # Check if the source directory exists
+  if [ ! -d "$SOURCE_DIR" ]; then
+    echo "Error: Source directory '$SOURCE_DIR' does not exist!"
+    exit 1
+  fi
+
+  echo "Copying and preparing source fies from: $SOURCE_DIR to $TARGET_DIR"
+
+  # Create the target directory if it doesn't exist
+  mkdir -p "$TARGET_DIR"
+
+  # Copy all files and directories from the source to the target
+  rsync -a "$SOURCE_DIR/" "$TARGET_DIR/"
+
+  # Recursively process all .java files in the target directory
+  find "$TARGET_DIR" -type f -name "*.java" | while read -r FILE; do
+    sed -i '' "1s#^package com\.px3j\(.*\)#package \$\{package\}\1#" "$FILE"
+    sed -i '' "s#^import com\.px3j\.service\(.*\)#import \$\{package\}.service\1#" "$FILE"
+  done
+
+  echo "Files processed and copied to '$TARGET_DIR' with updated package declarations."
+}
+
+copyCoreSourceToArchetype() {
+  local ARCHETYPE_ROOT="lush-archetypes/lush-service-archetype-$1"
+
+  local ARCH_SRC_ROOT=${ARCHETYPE_ROOT}/src/main/resources/archetype-resources/src/main/java/
+  local ARCH_TEST_ROOT=${ARCHETYPE_ROOT}/src/main/resources/archetype-resources/src/test/java/
+
+  # Copy the source over
+  copySourceImpl "lush-core-projects/lush-core-$1/src/test/java/com/px3j/" "${ARCH_SRC_ROOT}"
+
+  # Move the test class
+  mkdir -p ${ARCH_TEST_ROOT}/service
+  mv ${ARCH_SRC_ROOT}/service/LushServiceAppTests.java ${ARCH_TEST_ROOT}/service
+}
+
+buildArchetype() {
+  local whichArchetype=$1
+  local ARCHETYPE_ROOT="lush-archetypes/lush-service-archetype-$whichArchetype"
+
+  pushd "$ARCHETYPE_ROOT"
+  mvn clean install
+  popd
+}
+
+stampArchetype() {
+  local whichArchetype=$1
+  local ARCHETYPE_ROOT="lush-archetypes"
+
+  pushd $ARCHETYPE_ROOT
+
+  rm -rf "my-lush-service-$whichArchetype"
+
+  mvn archetype:generate \
+      -DarchetypeGroupId=com.px3j \
+      -DarchetypeArtifactId=lush-service-archetype-"$whichArchetype" \
+      -DarchetypeVersion=2024.Q4.1 \
+      -DgroupId=com.poc \
+      -DartifactId=my-lush-service-"$whichArchetype"
+
+  pushd "my-lush-service-$whichArchetype"
+  mvn clean package
+  popd
+}
+
+if [ "$#" -ne 1 ]; then
+  echo "Usage: $0 <lush-source-root>"
+  exit 1
+fi
+
+LUSH_SRC_ROOT="$1"
+#LUSH_SRC_ROOT=/Users/paul/develop/official/lush
+
+pushd "$LUSH_SRC_ROOT"
+
+buildAndInstallCore
+
+# copy the web/webflux core test code corresponding archetype with variable replacement.
+copyCoreSourceToArchetype "web"
+copyCoreSourceToArchetype "webflux"
+
+buildArchetype "web"
+buildArchetype "webflux"
+
+#stampArchetype "web"
+#stampArchetype "webflux"
+
+popd
+exit 0
+
+

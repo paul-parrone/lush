@@ -1,0 +1,82 @@
+services:
+  consul:
+    container_name: consul
+    image: consul:latest
+    labels:
+      com.px3j.lush.tier: "infrastructure"
+    ports:
+      - "8300:8300"
+      - "8500:8500"
+    networks:
+      - dev
+
+  mongo:
+    image: mongo:latest
+    labels:
+      com.px3j.lush.tier: "infrastructure"
+    restart: always
+    ports:
+      - 27017:27017
+    networks:
+      - dev
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - ${HOME}/develop/docker-volumes/lush/mongo-data:/data/db:rw
+
+  mongo-express:
+    image: mongo-express:latest
+    labels:
+      com.px3j.lush.tier: "infrastructure"
+    restart: always
+    ports:
+      - 9081:8081
+    networks:
+      - dev
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+
+    volumes:
+      - ${HOME}/develop/docker-volumes/lush:/DATA/CONFIGDB:rw              # Persistence data
+
+  zipkin:
+    container_name: zipkin
+    image: openzipkin/zipkin:latest
+    labels:
+      com.px3j.lush.tier: "infrastructure"
+    ports:
+      - "9411:9411"
+    networks:
+      - dev
+
+  redis:
+    container_name: redis
+    hostname: redis
+    image: redis
+    labels:
+      com.px3j.lush.tier: "infrastructure"
+    ports:
+      - "6379:6379"
+    networks:
+      - dev
+
+  redis-commander:
+    container_name: redis-commander
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    labels:
+      com.px3j.lush.tier: "infrastructure"
+    restart: always
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"
+    networks:
+      - dev
+
+networks:
+  dev:
+    driver: bridge

@@ -1,0 +1,17 @@
+spring:
+  application:
+    # typical spring application name, should be overridden by Lush services
+    name: lush-core
+
+logging:
+  level:
+    root: INFO
+    com.px3j.lush: ERROR
+
+# Lush related properties are below
+lush:
+  # Here you can specify public and private paths.
+  # security.protected-paths is a comma-separated list of paths that will be protected by Lush configured Spring Security
+  security:
+    protected-paths: /lush/example/*
+    public-paths:

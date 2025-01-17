@@ -1,0 +1,40 @@
+server:
+  port: 9011
+
+spring:
+ application:
+   name: lush-webflux-service
+
+logging:
+  level:
+    root: INFO
+    lush.core.debug: DEBUG
+
+lush:
+  # Here you can specify public and private paths.
+  # protected-paths is a comma-separated list of paths that will be protected by the Spring Security
+  # by default, integrated with Lush LushTicket
+  security:
+    protected-paths: /lush/cat/*, /lush/example/**
+    public-paths: /actuator/**, /health/**, /ui/**, /swagger-ui/**, /swagger-resources/**, /v3/api-docs/**, /v3/api-docs.yaml, /swagger-ui.html, /webjars-swagger-ui, /webjars/swagger-ui/index.html, /webjars/**
+  test:
+    remote-ping-url: http://localhost:9010
+
+## Spring Boot Actuator Related
+management:
+  endpoints:
+    web:
+      exposure:
+        include: configprops,env,health,httptrace,info,loggers,shutdown
+
+  # Micrometer tracing configuration properties
+  tracing:
+    sampling:
+      probability: 1.0
+
+    baggage:
+      enabled: true
+      remote-fields: lush-user-name
+      #      local-fields: lush-user-name   (don't enable this, it'll stop baggage from propagating)
+      tag-fields: lush-user-name
+      correlation.fields: lush-user-name

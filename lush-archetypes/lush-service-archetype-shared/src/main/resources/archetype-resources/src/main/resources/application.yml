@@ -1,0 +1,43 @@
+server:
+  port: 9010
+
+spring:
+  application:
+    name: ${artifactId}
+
+logging:
+  file:
+    # Probably want to change the logging file path
+    path: /tmp
+  level:
+    root: INFO
+    lush.core.debug: DEBUG
+
+lush:
+  # Here you can specify public and private paths.
+  # protected-paths is a comma-separated list of paths that will be protected by the Spring Security
+  # by default, integrated with Lush LushTicket
+  security:
+    protected-paths: /lush/example/*
+    public-paths: /actuator/**, /health/**, /ui/**, /swagger-ui/**, /swagger-resources/**, /v3/api-docs/**, /v3/api-docs.yaml, /swagger-ui.html, /webjars-swagger-ui, /webjars/swagger-ui/index.html, /webjars/**
+  test:
+    remote-ping-url: http://localhost:9010
+    
+# If you aren't using the clear-ticket Spring profile, then you must provide the secret-key and access-key in order to
+# decrypt the Lush Ticket.  This also assumes that your Lush Ticket Service uses the same keys to encrypt the Ticket
+#
+#  crypto:
+#    secret-key: ${LUSH_PASSPORT_SECRET_KEY}
+#    access-key: ${LUSH_PASSPORT_ACCESS_KEY}
+
+## Spring Boot Actuator Related
+management:
+  endpoints:
+    web:
+      exposure:
+        include: configprops,env,health,httptrace,info,loggers,shutdown
+  #        include: prometheus
+
+  tracing:
+    sampling:
+      probability: 1.0
