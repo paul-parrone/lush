@@ -14,7 +14,6 @@
   <modules>
     <module>lush-service-archetype-web</module>
     <module>lush-service-archetype-webflux</module>
-    <module>my-lush-service-web</module>
   </modules>
   <dependencies>
     <dependency>
