@@ -9,7 +9,7 @@
     <parent>
         <groupId>com.px3j</groupId>
         <artifactId>lush-archetypes</artifactId>
-        <version>2024.Q4.1-SNAPSHOT</version>
+        <version>2024.Q4.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 

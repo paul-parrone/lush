@@ -68,7 +68,7 @@ stampArchetype() {
   mvn archetype:generate \
       -DarchetypeGroupId=com.px3j \
       -DarchetypeArtifactId=lush-service-archetype-"$whichArchetype" \
-      -DarchetypeVersion=2024.Q4.1-SNAPSHOT \
+      -DarchetypeVersion=2024.Q4.1 \
       -DgroupId=com.poc \
       -DartifactId=my-lush-service-"$whichArchetype"
 
@@ -96,8 +96,8 @@ copyCoreSourceToArchetype "webflux"
 buildArchetype "web"
 buildArchetype "webflux"
 
-stampArchetype "web"
-stampArchetype "webflux"
+#stampArchetype "web"
+#stampArchetype "webflux"
 
 popd
 exit 0

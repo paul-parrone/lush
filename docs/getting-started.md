@@ -8,7 +8,7 @@ This section will show you how to use the Lush Maven archetype to create your fi
 
 #### Generate from the Lush Service Archetype
 ```shell
-mvn archetype:generate -DarchetypeGroupId=com.px3j -DarchetypeArtifactId=lush-service -DarchetypeVersion=2022.9.3 -DgroupId=com.poc -DartifactId=my-lush-service
+mvn archetype:generate -DarchetypeGroupId=com.px3j -DarchetypeArtifactId=lush-service -DarchetypeVersion=2024.Q4.1 -DgroupId=com.poc -DartifactId=my-lush-service
 ```
 
 If all goes well, you should see a new service created below your current working directory.  Change to that directory then run the maven command below to build the service.  
@@ -17,10 +17,9 @@ In the commands below, you may need to change **my-lush-service** to your servic
 
 #### Build the service
 ```shell
-mvn -Pdeveloper clean package
+mvn clean package
 ```
 
-Note that we are using the developer maven profile as we are running it on our local machine - there's more detail on that at the bottom of this guide.  
 
 If all goes well, your service will be built and the test cases will be run.  You'll see a bunch of output from the test cases, you can ignore that for now.
 
